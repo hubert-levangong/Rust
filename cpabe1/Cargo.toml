@@ -1,0 +1,15 @@
+[package]
+name = "cpabe1"
+version = "0.1.0"
+authors = ["Hubert A. Le Van Gong <hubert-levangong@users.noreply.github.com>"]
+edition = "2018"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+chrono = "0.4.9"
+rand = "0.7.2"
+rabe = { path = "/Users/hubert/Documents/GitHub/rabe"}
+ring = "0.16.9"
+rust-crypto = "^0.2.36"
+rustc-serialize = "0.3.24"
