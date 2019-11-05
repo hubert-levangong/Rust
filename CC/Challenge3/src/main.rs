@@ -7,47 +7,52 @@ struct Freq {
 }
 
 fn main() {
-    let test = hex::decode("1b37373331363f78151b7f2b783431333d78397828372d363c78373e783a393b3736").expect("Failed to decode hex string");
-    println!("data has {} characters.", test.len());
-    get_most_frequent_code(&test);
-
+    let testvec = hex::decode("1b37373331363f78151b7f2b783431333d78397828372d363c78373e783a393b3736").expect("Failed to decode hex string");
+    println!("data has {} characters.", testvec.len());
+    let topcode = get_most_frequent_code(&testvec);
+    let mut xorvec = Vec::with_capacity(testvec.len());
+    for _element in testvec.iter() {
+        //
+        xorvec.push(topcode);
+    }
+    let result = fixed_xor(testvec, xorvec);
+    println!("{:?}", result);
+    let output  = String::from_utf8(result).expect("Error");
+    println!("End result: {}", output);
 }
 
 
-fn get_most_frequent_code(data : &Vec<u8>) -> i32 {
+fn get_most_frequent_code(data : &Vec<u8>) -> u8 {
     let mut liste : Vec<Freq> = Vec::new();
-    let mut res = 0;
 
     // Calculate frequencies
-    for (i, &item) in data.iter().enumerate() {
-        let c = item;
-        res = 0;
-        for (j, &item2) in data.iter().enumerate() {
-            if !in_liste(item2, &liste) {
-                println!("comparing [{}]-[{}]", c, item2);
-                if c == item2 {
-                    res += 1;
-                }
-                let elem : Freq = Freq {code: c, occurences: res};
-                liste.push(elem);
-            } else { println!("skipping [{}]", item2);}
+    for &item in data.iter() {
+        let index = in_liste(item, &liste);
+        if index != -1 {
+            liste[index as usize].occurences += 1;
+        } else {
+            let elem : Freq = Freq {code: item, occurences: 1};
+            liste.push(elem);
         }
     }
-    println!("The data contains {} different codes", liste.len());
-    print!("Liste: ");
-    for (j, &item3) in liste.iter().enumerate() {
-        print!("[{}, {}]", item3.code, item3.occurences);
-    }
 
-    return res;
+    // going through list of occurences to find the top one
+    if liste.len() == 0 { return 0};
+    let mut top = liste[0];
+    for &item in liste.iter() {
+        if item.occurences > top.occurences {
+            top = item;
+        }
+    }
+    return top.code;
 }
 
 
-fn in_liste(code : u8, liste : &Vec<Freq>) -> bool {
+fn in_liste(code : u8, liste : &Vec<Freq>) -> i32 {
     for (i, elem) in liste.iter().enumerate() {
-        if code == elem.code { return true}
+        if code == elem.code { return i as i32}
     }
-    return false;
+    return -1;
 }
 
 fn fixed_xor(buf1 : Vec<u8>, buf2 : Vec<u8>) -> Vec<u8> {
@@ -55,7 +60,7 @@ fn fixed_xor(buf1 : Vec<u8>, buf2 : Vec<u8>) -> Vec<u8> {
     if buf1.len() != buf2.len() {
         panic!("Lenghts differ.")
     }
-    for (i, &item) in buf1.iter().enumerate() {
+    for (i, &_item) in buf1.iter().enumerate() {
         res.push(buf1[i] ^ buf2[i]);
     }
     return res;
