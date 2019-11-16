@@ -8,22 +8,36 @@ struct Distance {
     dist: f32,
 }
 
-// Top 3 distances with corresponding key sizes
-// [14 : 3.9285715]
-// [26 : 3.8461537]
-// [12 : 3.8333333]
+// 3 smallest distances with corresponding key sizes
+// [3 : 2.3333333] <--- key size of 3 bytes
+// [2 : 2.5]
+// [7 : 2.5714285]
+const KEY_SIZE: usize = 3;
 
 fn main() {
+// Steps 1 & 2
 //    let in1 = Vec::from("this is a test");
 //    let in2 = Vec::from("wokka wokka!!!");
 //    let res = hamming_distance(&in1, &in2);
 //    println!("Hamming distance = {}", res);
-    let mut dists= Vec::new();
-    keysize_distances(2, 40, &mut dists);
-    println!("result has {} distances", dists.len());
-    for &elem in dists.iter() {
-        println!("[{}:{}]", elem.keysz, elem.dist);
-    }
+
+// Steps 3 & 4
+//    let mut dists= Vec::new();
+//    keysize_distances(2, 40, &mut dists);
+//    println!("result has {} distances", dists.len());
+//    for &elem in dists.iter() {
+//        println!("[{}:{}]", elem.keysz, elem.dist);
+//    }
+
+// Steps 5, 6 & 7
+    let mut blocks : Vec<Vec<u8>> = Vec::new();
+    fill_blocks(&mut blocks);
+    println!("Blocks: {:?}", blocks);
+    let bl = blocks.len();
+    let mut tblocks : Vec<Vec<u8>> = Vec::with_capacity(KEY_SIZE);
+    tblocks.resize(KEY_SIZE, Vec::new());
+    transpose_blocks(&blocks, &mut tblocks);
+    println!("Transposed Blocks: {:?}", tblocks);
 
 }
 
@@ -78,4 +92,35 @@ fn fill_two_vectors(vector1 : &mut Vec<u8>, vector2 : &mut Vec<u8>) -> Result<()
     fp.read(vector2)?;
 
     Ok(())
+}
+
+
+fn fill_blocks(liste : &mut Vec<Vec<u8>>) -> Result<(), Box<dyn Error>> {
+    let filename = String::from("/home/hubert/Documents/Github/Rust/CC/Challenge6/src/6.txt");
+    let mut fp = fs::File::open(filename)?;
+    let mut counter = 0;
+    let nbblocks = loop {
+        let mut vector: Vec<u8> = Vec::with_capacity(KEY_SIZE);
+        vector.resize(KEY_SIZE, 0);
+        let ret = fp.read(&mut vector)?;
+        if ret != KEY_SIZE {
+            break counter;
+        }
+        counter += 1;
+        liste.push(vector);
+    };
+    println!("Counted {} blocks", nbblocks);
+    Ok(())
+}
+
+
+fn transpose_blocks(bin : &Vec<Vec<u8>>, bout : &mut Vec<Vec<u8>>) {
+    let nbb = bin.len();
+    for _i in 0..KEY_SIZE {
+        bout[_i] = Vec::new();
+        for _j in 0..nbb {
+            //println!("[{}, {}] <- {}", _i, _j, bin[_j][_i]);
+            bout[_i].push(bin[_j][_i]);
+        }
+    }
 }
