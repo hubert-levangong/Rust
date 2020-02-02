@@ -157,7 +157,7 @@ fn main() {
 //    key.push(topcode4);
 //    key.push(topcode5);
 //    key.push(topcode6);
-//    key.push(topcode7);
+    key.push(topcode7);
 
     let v1 = key.clone();
     let keystr = String::from_utf8(v1).expect("ok");
