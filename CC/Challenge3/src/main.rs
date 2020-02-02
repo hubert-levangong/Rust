@@ -10,9 +10,9 @@ fn main() {
     let testvec = hex::decode("1b37373331363f78151b7f2b783431333d78397828372d363c78373e783a393b3736").expect("Failed to decode hex string");
     println!("data has {} characters.", testvec.len());
     let topcode = get_most_frequent_code(&testvec);
+    println!("Most frequent code: {}", topcode);
     let mut xorvec = Vec::with_capacity(testvec.len());
     for _element in testvec.iter() {
-        //
         xorvec.push(topcode);
     }
     let result = fixed_xor(testvec, xorvec);

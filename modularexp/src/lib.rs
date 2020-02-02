@@ -12,7 +12,6 @@ mod modularexp {
 }
 
 pub fn square_and_multiply(base: u32, power: u32, modulo: u32) -> u32 {
-    let mut i = 0;
     let mut val = 1;
     let mut p = power;
     while i < 32 {

@@ -13,7 +13,7 @@ struct Freq {
 
 
 fn main() -> Result<(), Box<dyn Error>> {
-    let filename = String::from("/home/hubert/Documents/Github/Rust/CC/Challenge4/src/4.txt");
+    let filename = String::from("/Users/hubert/Documents/Github/Rust/CC/Challenge4/src/4.txt");
     println!("Loading the file");
     let content = file_reader(&filename)?;
 
